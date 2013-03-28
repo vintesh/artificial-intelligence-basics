@@ -1,26 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Implemented as Tutorial of Masters Program 
+ * M.E. - Computer Engineering 
+ * Artificial Intelligence
+ * SCET, Surat
  */
 package scet.vintesh.eight_puzzle.ds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import scet.vintesh.heuristic.search.ds.Node;
 
 /**
  *
  * @author Vintesh
  */
-public class Board implements Comparable<Board> {
+public final class BoardFor8Puzzle implements Comparable<BoardFor8Puzzle>, Node {
 
-    public static Board goalState;
-
-    static {
-        int[][] tiles = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
-        goalState = new Board(null, tiles);
-    }
-    private Board parent;
-    private ArrayList<Board> childs;
+    private BoardFor8Puzzle parent;
+    private ArrayList<BoardFor8Puzzle> childs;
     /**
      * Tiles having the value 0 to 8 ... 0 means the BLACK TILE
      */
@@ -29,11 +26,11 @@ public class Board implements Comparable<Board> {
     private float actualValue;
     private Position blankTilePosition;
 
-    public Board(Board parent, int[][] tiles) {
+    public BoardFor8Puzzle(BoardFor8Puzzle parent, int[][] tiles) {
         this.parent = parent;
         this.tiles = tiles;
         // Setting & calculating the position of blank tile.
-        this.calculateActualValue();
+        this.calculateActualCostUptillNow();
         this.calculateHeuristicValue();
         this.blankTilePosition = calculateBlankTilePosition();
     }
@@ -41,7 +38,8 @@ public class Board implements Comparable<Board> {
     /**
      * Calculating the h(x) value
      */
-    private void calculateHeuristicValue() {
+    @Override
+    public void calculateHeuristicValue() {
         this.heuristicValue = calculateManhattanDistance() + calculateMisPlacedTiles();
     }
 
@@ -52,8 +50,8 @@ public class Board implements Comparable<Board> {
      */
     private float calculateMisPlacedTiles() {
         int totalSum = 0;
-        if (goalState != null) {
-            int[][] goalStateTiles = goalState.getTiles();
+        if (SearchSpaceFor8Puzzle.goalState != null) {
+            int[][] goalStateTiles = SearchSpaceFor8Puzzle.goalState.getTiles();
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (tiles[i][j] != goalStateTiles[i][j]) {
@@ -89,7 +87,8 @@ public class Board implements Comparable<Board> {
         return manhattanDistanceSum;
     }
 
-    private void calculateActualValue() {
+    @Override
+    public void calculateActualCostUptillNow() {
         if (parent != null) {
             this.actualValue = parent.getActualValue() + 1;
         } else {
@@ -102,13 +101,14 @@ public class Board implements Comparable<Board> {
      *
      * @return the F(x) value
      */
-    public float getEstimatedValue() {
+    @Override
+    public float getFinalHeauristicValue() {
         return this.actualValue + this.heuristicValue;
     }
 
-    public ArrayList<Board> generateAndSetChilds(Board board) {
+    public ArrayList<BoardFor8Puzzle> generateSetAndGetChilds(BoardFor8Puzzle board) {
         ArrayList<MovesOfBlankSlide> possibleMoves = findPossibleMoves(board.getBlankTilePosition());
-        final ArrayList<Board> childerns = generateChilds(board, possibleMoves);
+        final ArrayList<BoardFor8Puzzle> childerns = generateChilds(board, possibleMoves);
         this.childs = childerns;
         return childerns;
     }
@@ -116,7 +116,8 @@ public class Board implements Comparable<Board> {
     /**
      * Finding the List of directions in which the tile can go.
      *
-     * @param blankTilePosition The position of the BLANK tile in the Board
+     * @param blankTilePosition The position of the BLANK tile in the
+     * BoardFor8Puzzle
      * @return List of the possible MovesOfBlankSlide
      */
     private static ArrayList<MovesOfBlankSlide> findPossibleMoves(Position blankTilePosition) {
@@ -150,8 +151,8 @@ public class Board implements Comparable<Board> {
      * @param possibleMoves
      * @return list of Child Nodes
      */
-    private static ArrayList<Board> generateChilds(Board board, ArrayList<MovesOfBlankSlide> possibleMoves) {
-        ArrayList<Board> childList = new ArrayList<Board>();
+    private static ArrayList<BoardFor8Puzzle> generateChilds(BoardFor8Puzzle board, ArrayList<MovesOfBlankSlide> possibleMoves) {
+        ArrayList<BoardFor8Puzzle> childList = new ArrayList<BoardFor8Puzzle>();
 
         for (MovesOfBlankSlide moves : possibleMoves) {
             // Cloning the Array to Generate the new Children
@@ -168,22 +169,22 @@ public class Board implements Comparable<Board> {
                 case UP:
                     tiles[blankTileXY.x][blankTileXY.y] = tiles[blankTileXY.x - 1][blankTileXY.y];
                     tiles[blankTileXY.x - 1][blankTileXY.y] = x;
-                    childList.add(new Board(board, tiles));
+                    childList.add(new BoardFor8Puzzle(board, tiles));
                     break;
                 case DOWN:
                     tiles[blankTileXY.x][blankTileXY.y] = tiles[blankTileXY.x + 1][blankTileXY.y];
                     tiles[blankTileXY.x + 1][blankTileXY.y] = x;
-                    childList.add(new Board(board, tiles));
+                    childList.add(new BoardFor8Puzzle(board, tiles));
                     break;
                 case LEFT:
                     tiles[blankTileXY.x][blankTileXY.y] = tiles[blankTileXY.x][blankTileXY.y - 1];
                     tiles[blankTileXY.x][blankTileXY.y - 1] = x;
-                    childList.add(new Board(board, tiles));
+                    childList.add(new BoardFor8Puzzle(board, tiles));
                     break;
                 case RIGHT:
                     tiles[blankTileXY.x][blankTileXY.y] = tiles[blankTileXY.x][blankTileXY.y + 1];
                     tiles[blankTileXY.x][blankTileXY.y + 1] = x;
-                    childList.add(new Board(board, tiles));
+                    childList.add(new BoardFor8Puzzle(board, tiles));
                     break;
                 default:
                     throw new IllegalStateException("Wrong TILE MOVE ..... CHILDREN are not generated");
@@ -230,10 +231,10 @@ public class Board implements Comparable<Board> {
      * -1 - when Current object is Less then the Given/Passed Object 0 - when
      * both objects are Equal in terms of their ESTIMATED COST.
      */
-    public int compareTo(Board board) {
-        if (this.getEstimatedValue() < board.getEstimatedValue()) {
+    public int compareTo(BoardFor8Puzzle board) {
+        if (this.getFinalHeauristicValue() < board.getFinalHeauristicValue()) {
             return -1;
-        } else if (this.getEstimatedValue() > board.getEstimatedValue()) {
+        } else if (this.getFinalHeauristicValue() > board.getFinalHeauristicValue()) {
             return 1;
         } else {
             return 0;
@@ -242,8 +243,8 @@ public class Board implements Comparable<Board> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Board) {
-            int[][] boardState = ((Board) obj).getTiles();
+        if (obj instanceof BoardFor8Puzzle) {
+            int[][] boardState = ((BoardFor8Puzzle) obj).getTiles();
             int[][] currentBoardState = this.getTiles();
             boolean flag = true;
             for (int i = 0; i < 3; i++) {
@@ -262,7 +263,19 @@ public class Board implements Comparable<Board> {
     @Override
     public String toString() {
         return "State= " + Arrays.toString(tiles[0]) + " , " + Arrays.toString(tiles[1]) + " , "
-                + Arrays.toString(tiles[2]) + " | f(x)= " + getEstimatedValue() + " | h(x)= " + heuristicValue + " | g(x)= "
+                + Arrays.toString(tiles[2]) + " | f(x)= " + getFinalHeauristicValue() + " | h(x)= " + heuristicValue + " | g(x)= "
                 + actualValue;
+    }
+
+    public void setParent(BoardFor8Puzzle parent) {
+        this.parent = parent;
+    }
+
+    public void setChildren(ArrayList<BoardFor8Puzzle> successorsToSet) {
+        this.childs = successorsToSet;
+    }
+
+    public BoardFor8Puzzle getParent() {
+        return this.parent;
     }
 }
