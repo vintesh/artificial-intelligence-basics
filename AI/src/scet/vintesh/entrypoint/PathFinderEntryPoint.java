@@ -23,19 +23,17 @@ public class PathFinderEntryPoint {
 
     public static void main(String[] args) {
         graphTraversal();
-        solve8PuzzleProblem();
-    }
-
-    private static void solve8PuzzleProblem() {
     }
 
     private static void graphTraversal() {
         System.out.println("Path Finder: ->");
         try {
-//            initGraphTopo1();
-            initGraphTopo2();
-            Node sourceNode = G.getNodeWithIdentifier("1");
-            Node destinationNode = G.getNodeWithIdentifier("6");
+            initGraphTopo1();
+            Node sourceNode = G.getNodeWithIdentifier("A");
+            Node destinationNode = G.getNodeWithIdentifier("E");
+//            initGraphTopo2();
+//            Node sourceNode = G.getNodeWithIdentifier("1");
+//            Node destinationNode = G.getNodeWithIdentifier("6");
 //            FindMultiplePaths.findMultiplePath(G, sourceNode, destinationNode);
 //            FindMultiplePaths.findMultiplePathUsingStack(G, sourceNode, destinationNode);
             FindMultiplePaths.findAllPaths(G, sourceNode, destinationNode);

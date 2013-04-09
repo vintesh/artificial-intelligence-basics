@@ -8,9 +8,9 @@ package scet.vintesh.entrypoint;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import scet.vintesh.eight_puzzle.ds.BoardFor8Puzzle;
-import scet.vintesh.eight_puzzle.ds.SearchSpaceFor8Puzzle;
-import scet.vintesh.heuristic.search.AStarAlgo;
+import scet.vintesh.eight_puzzle.ds.Board;
+import scet.vintesh.eight_puzzle.ds.SearchSpace;
+import scet.vintesh.eight_puzzle.heuristic.search.AStarAlgo;
 
 /**
  *
@@ -18,17 +18,22 @@ import scet.vintesh.heuristic.search.AStarAlgo;
  */
 public class EightPuzzleEntryPoint {
 
-    private static SearchSpaceFor8Puzzle searchSpace = new SearchSpaceFor8Puzzle();
+    private static SearchSpace searchSpace = new SearchSpace();
 
     public static void main(String[] args) {
-        int[][] initialBoardState = {{1, 2, 3}, {4, 0, 5}, {6, 7, 8}};
-//        int[][] initialBoardState = {{6, 1, 2}, {0, 7, 8}, {3, 5, 4}};
-        BoardFor8Puzzle startNode = new BoardFor8Puzzle(null, initialBoardState);
+        int[][] initialBoardState = {{1, 2, 3}, {4, 0, 5}, {6, 7, 8}}; // Ans in - 15 Steps
+//        int[][] initialBoardState = {{4, 1, 2}, {0, 8, 7}, {6, 3, 5}}; // Ans in - 17 Steps
+//        int[][] initialBoardState = {{4, 6, 1}, {5, 8, 3}, {2, 7, 0}}; // Unsolvable
+//        int[][] initialBoardState = {{6, 1, 2}, {0, 7, 8}, {3, 5, 4}}; // Ans in - 25 Steps
+//        int[][] initialBoardState = {{3, 0, 4}, {1, 5, 7}, {2, 8, 6}}; // Ans in - 21 Steps
+//        int[][] initialBoardState = {{6, 1, 2}, {0, 7, 4}, {3, 5, 8}}; // Unsolvable
+//        int[][] initialBoardState = {{7, 4, 1}, {0, 6, 8}, {3, 5, 2}}; // Unsolvable
+        Board startNode = new Board(null, initialBoardState);
 
         searchSpace.ROOT = startNode;
         searchSpace.OPEN.add(startNode);
         startSolving();
-//        startSolvingUsingBestFirstSearch(SearchSpaceFor8Puzzle.currentNode);
+//        startSolvingUsingBestFirstSearch(SearchSpace.currentNode);
     }
 
     private static void startSolving() {
@@ -36,7 +41,7 @@ public class EightPuzzleEntryPoint {
         int step = 0;
 
         for (Iterator it = applyAStar; it.hasNext();) {
-            BoardFor8Puzzle board = (BoardFor8Puzzle) it.next();
+            Board board = (Board) it.next();
             System.out.println(step++ + " -> " + board);
         }
     }
@@ -49,16 +54,16 @@ public class EightPuzzleEntryPoint {
      * @param currentNode - The Root of the Tree which is START State
      */
     @Deprecated
-    private static void startSolvingUsingBestFirstSearch(BoardFor8Puzzle currentNode) {
-        if (currentNode.equals(SearchSpaceFor8Puzzle.goalState)) {
+    private static void startSolvingUsingBestFirstSearch(Board currentNode) {
+        if (currentNode.equals(SearchSpace.goalState)) {
             System.out.println("Solution is found.");
             return;
         } else {
-            ArrayList<BoardFor8Puzzle> newChilds = currentNode.generateSetAndGetChilds(currentNode);
-            for (BoardFor8Puzzle board : newChilds) {
+            ArrayList<Board> newChilds = currentNode.generateSetAndGetChilds(currentNode);
+            for (Board board : newChilds) {
                 searchSpace.OPEN.add(board);
             }
-            BoardFor8Puzzle selectedNode = searchSpace.getBestNodeFromOPEN();
+            Board selectedNode = searchSpace.getBestNodeFromOPEN();
 //            System.out.println(STEPS + " - Node: " + selectedNode.toString());
 //            if (STEPS++ == 25) {
 //                System.out.println("TEST");
