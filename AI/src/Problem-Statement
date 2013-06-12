@@ -1,6 +1,7 @@
 /*
  * M.E. - Computer Engineering 
  * Artificial Intelligence
+ * SEM - II, 2013-2014
  * SCET, Surat
  */
 
@@ -12,3 +13,6 @@ Solve 8-puzzle using the A* Algorithm or any other methods.
 
 Lab-3:
 Solve Tic-Tac-Toe using any of the methods.
+
+Lab-4:
+Make a Demo Program for solving any problem using Genetic Algorithm.

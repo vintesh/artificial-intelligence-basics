@@ -42,13 +42,14 @@ public class GameStarter {
             }
 
             // Computer's move
-            // currentBoard = GameTree.getNextStateByApplyingMinMax(DEPTH, currentBoard, computerSymbol);
+//            currentBoard = currentBoard.getChildrenByMinMaxVal(GameTree.minMax(currentBoard, WhoseTurn.X, DEPTH - 2 * i));
             currentBoard = currentBoard.getChildrenByMinMaxVal(GameTree.minMaxWithAlphaBetaCuttOff(currentBoard, WhoseTurn.X, DEPTH - i * 2, -15, 15));
             System.out.println("AI's Move: " + currentBoard);
 
             if (isAnyOneWon(currentBoard)) {
                 break;
             }
+            System.out.println("Total No Of Node Expanded..: " + GameTree.totalNoOfNodesExpanded);
         }
     }
 

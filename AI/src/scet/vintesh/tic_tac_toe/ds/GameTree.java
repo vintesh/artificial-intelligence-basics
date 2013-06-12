@@ -49,7 +49,7 @@ public class GameTree {
 
         return childrens.element();
     }
-
+    
     /**
      * MinMax Algorithm used is:
      * http://www.ocf.berkeley.edu/~yosenl/extras/alphabeta/alphabeta.html
@@ -59,12 +59,15 @@ public class GameTree {
      * @param depth - up to which level tree is being Expand
      * @return - the MAX value of the available for Children
      */
+    public static int totalNoOfNodesExpanded = 0;
+
     static float minMax(Board board, WhoseTurn whoseTurn, int depth) {
 
         // Generating Children
         board.generateChildren(whoseTurn);
         PriorityQueue<Board> children = board.getChilds();
-
+        totalNoOfNodesExpanded += children.size();
+        
         /*
          * Returing the HeuristicValue for the leaf nodes in the tree those
          * values gonna be propagate to the parents in the tree
@@ -100,7 +103,7 @@ public class GameTree {
         // Generating Children
         board.generateChildren(whoseTurn);
         PriorityQueue<Board> children = board.getChilds();
-
+        
         /*
          * Returing the HeuristicValue for the leaf nodes in the tree those
          * values gonna be propagate to the parents in the tree
@@ -113,6 +116,7 @@ public class GameTree {
         for (Iterator<Board> it = children.iterator(); it.hasNext();) {
             Board childBoard = it.next();
             childBoard.MinMaxVal = minMaxWithAlphaBetaCuttOff(childBoard, whoseTurn.getOtherOne(), depth - 1, alpha, beta);
+            totalNoOfNodesExpanded += 1;
         }
 
         float score;
